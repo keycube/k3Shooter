@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+#include "k3Shooter/k3ShooterGameInstance.h"
 #include "InputCoreTypes.h"
 #include "k3ShooterCharacter.generated.h"
 
@@ -30,6 +32,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	
+	void GetNewTargetWord();
 
+	float CompareAndGetScore();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString TargetWord = "";
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString Typed = "";
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int CurrentWordLength = 3;
 };
