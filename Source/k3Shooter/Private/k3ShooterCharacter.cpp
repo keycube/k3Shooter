@@ -29,20 +29,39 @@ void Ak3ShooterCharacter::Tick(float DeltaTime)
 void Ak3ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAction("AnyKey", IE_Released, this, &Ak3ShooterCharacter::OnAnyKeyPress);
+	PlayerInputComponent->BindAction("AnyKey", IE_Released, this, &Ak3ShooterCharacter::OnAnyKeyPress); // Bind any key press to that function
 }
 
+
+// Executed on any key press (bound in SetupPlayerInputComponent)
 void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, key.GetFName().ToString());
+
+	//Check if we pressed a letter.
+	FString n = key.GetFName().ToString().ToUpper();
+	//GetFName returns the character we press, if pressing letters on keyboard. 
+	//So here we can just check if we have that character, then check if it's a letter (between A (65) and Z (90)).
+	if (n.Len() != 1 || ((unsigned int)(n[0]) < 65 || (unsigned int)(n[0]) > 90)) return; 
+
+	Typed += n;
+
+	if (Typed.Len() > CurrentWordLength) Typed = Typed.Mid(0, CurrentWordLength); // If what you typed is somehow above the length we want, trim it down
+	if (Typed.Len() == CurrentWordLength){
+		CompareAndGetScore(); // TODO : do something with the resulting score
+		// GetNewTargetWord(); //TODO : Uncomment this (commented for debugging purposes)
+	} 
+
+
+	GEngine->AddOnScreenDebugMessage(0x3001, 15.0f, FColor::Red, FString::Printf(TEXT("Pressed %s, current word is %s"), *n, *Typed)); //DEBUG
 }
 
+// Get a random word to be the new target
 void Ak3ShooterCharacter::GetNewTargetWord(){
-	Uk3ShooterGameInstance* GI = Cast<Uk3ShooterGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	Uk3ShooterGameInstance* GI = Cast<Uk3ShooterGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); 
 
 	Typed = "";
 
 	if (GI){
-		TargetWord = GI->GetRandomWordOfLength(CurrentWordLength);
+		TargetWord = GI->GetRandomWordOfLength(CurrentWordLength); // GameInstance has a function to do this. See k3Shooter/k3ShooterGameInstance.cpp
 	} else TargetWord = "ERROR02";
 }
 
@@ -54,8 +73,10 @@ float Ak3ShooterCharacter::CompareAndGetScore(){
 	float score = 0.0f;
 
 	for (int i = 0; i < CurrentWordLength; i++){
-		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)) score += 1.0f; //Add modifiers here if needed.
+		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)) score += 1.0f; //TODO?: Add modifiers here if needed.
 	}
+
+	GEngine->AddOnScreenDebugMessage(0x3002, 15.0f, FColor::Red, FString::Printf(TEXT("Score : %f"))); //DEBUG
 
 	return score;
 }

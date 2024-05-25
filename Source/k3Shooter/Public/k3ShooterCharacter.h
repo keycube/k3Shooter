@@ -37,7 +37,7 @@ public:
 	float CompareAndGetScore();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FString TargetWord = "";
+	FString TargetWord = "ARB";
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString Typed = "";
