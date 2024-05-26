@@ -36,6 +36,8 @@ void Ak3ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 // Executed on any key press (bound in SetupPlayerInputComponent)
 void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 
+	if (TargetWord == "") GetNewTargetWord(); // If we don't have a word, get a new one. This should only happen the first time.
+
 	//Check if we pressed a letter.
 	FString n = key.GetFName().ToString().ToUpper();
 	//GetFName returns the character we press, if pressing letters on keyboard. 
@@ -51,7 +53,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	} 
 
 
-	GEngine->AddOnScreenDebugMessage(0x3001, 15.0f, FColor::Red, FString::Printf(TEXT("Pressed %s, current word is %s"), *n, *Typed)); //DEBUG
+	GEngine->AddOnScreenDebugMessage(0x3001, 15.0f, FColor::Red, FString::Printf(TEXT("Pressed %s, current word is %s, target is %s"), *n, *Typed, *TargetWord)); //DEBUG
 }
 
 // Get a random word to be the new target
@@ -76,7 +78,7 @@ float Ak3ShooterCharacter::CompareAndGetScore(){
 		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)) score += 1.0f; //TODO?: Add modifiers here if needed.
 	}
 
-	GEngine->AddOnScreenDebugMessage(0x3002, 15.0f, FColor::Red, FString::Printf(TEXT("Score : %f"))); //DEBUG
+	GEngine->AddOnScreenDebugMessage(0x3002, 15.0f, FColor::Red, FString::Printf(TEXT("Score : %f"), score)); //DEBUG
 
 	return score;
 }
