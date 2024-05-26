@@ -82,3 +82,14 @@ float Ak3ShooterCharacter::CompareAndGetScore(){
 
 	return score;
 }
+
+FString Ak3ShooterCharacter::GetCurrentWordProgress(){
+	FString s = "";
+	for (int i = 0; i < Typed.Len(); i++){
+		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)){
+			s += "<Correct>"+TargetWord.Mid(i,1)+"</>";
+		} else s += "<Wrong>"+TargetWord.Mid(i,1)+"</>";
+	}
+	s += TargetWord.Mid(Typed.Len());
+	return s;
+}
