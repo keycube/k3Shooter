@@ -43,7 +43,7 @@ public:
 	FString Typed = "";
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int CurrentWordLength = 8;
+	int CurrentWordLength = 3;
 
 	UFUNCTION(BlueprintCallable)
 	FString GetCurrentWordProgress();
