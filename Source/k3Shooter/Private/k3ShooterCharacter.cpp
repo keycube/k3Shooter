@@ -49,7 +49,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	if (Typed.Len() > CurrentWordLength) Typed = Typed.Mid(0, CurrentWordLength); // If what you typed is somehow above the length we want, trim it down
 	if (Typed.Len() == CurrentWordLength){
 		CompareAndGetScore(); // TODO : do something with the resulting score
-		// GetNewTargetWord(); //TODO : Uncomment this (commented for debugging purposes)
+		GetNewTargetWord();
 	} 
 
 
