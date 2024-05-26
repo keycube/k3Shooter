@@ -18,7 +18,8 @@
 			"__locale": "cpp",
 			"string": "cpp",
 			"string_view": "cpp",
-			"bitset": "cpp"
+			"bitset": "cpp",
+			"__node_handle": "cpp"
 		}
 	},
 	"extensions": {

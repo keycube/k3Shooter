@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Math/UnrealMathUtility.h"
+
 #include "k3ShooterGameInstance.h"
+#include "Math/UnrealMathUtility.h"
 
 void Uk3ShooterGameInstance::PopulateList(TArray<FWordList> ListOfFWordList){
     WordLists = ListOfFWordList;
