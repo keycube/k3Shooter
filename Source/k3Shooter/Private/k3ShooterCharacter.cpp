@@ -8,6 +8,9 @@ Ak3ShooterCharacter::Ak3ShooterCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(RootComponent);
+	Camera->Activate(true);
 
 }
 
@@ -22,7 +25,11 @@ void Ak3ShooterCharacter::BeginPlay()
 void Ak3ShooterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (ShopRotationAlpha <= 1.0f){
+		ShopRotationAlpha += DeltaTime;
+		if (ShopRotationAlpha >= 1.0f) ShopRotationAlpha = 1.0f;
+		Camera->SetWorldRotation(FRotator(FQuat::Slerp(ShopRotationStart.Quaternion(), ShopRotationEnd.Quaternion(), ShopRotationAlpha)));
+	}
 }
 
 // Called to bind functionality to input
@@ -38,11 +45,21 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 
 	if (TargetWord == "") GetNewTargetWord(); // If we don't have a word, get a new one. This should only happen the first time.
 
-	//Check if we pressed a letter.
+	
 	FString n = key.GetFName().ToString().ToUpper();
+
+	if (n == "ONE") { // DEBUG - TO REMOVE ONCE GYROSCOPE IMPLEMENTED
+		ToggleShop();
+		return;
+	}
+
+	//Check if we pressed a letter.
 	//GetFName returns the character we press, if pressing letters on keyboard. 
 	//So here we can just check if we have that character, then check if it's a letter (between A (65) and Z (90)).
 	if (n.Len() != 1 || ((unsigned int)(n[0]) < 65 || (unsigned int)(n[0]) > 90)) return; 
+
+	// Shop is handled differently than this.
+	if (IsInShop) return ShopOnKeyPress(n); 
 
 	Typed += n;
 
@@ -51,7 +68,6 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 		CompareAndGetScore(); // TODO : do something with the resulting score
 		GetNewTargetWord();
 	} 
-
 
 	GEngine->AddOnScreenDebugMessage(0x3001, 15.0f, FColor::Red, FString::Printf(TEXT("Pressed %s, current word is %s, target is %s"), *n, *Typed, *TargetWord)); //DEBUG
 }
@@ -75,7 +91,10 @@ float Ak3ShooterCharacter::CompareAndGetScore(){
 	float score = 0.0f;
 
 	for (int i = 0; i < CurrentWordLength; i++){
-		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)) score += 1.0f; //TODO?: Add modifiers here if needed.
+		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)){
+			// Score Calculation
+			score += DamagePerLetter;
+		} 
 	}
 
 	GEngine->AddOnScreenDebugMessage(0x3002, 15.0f, FColor::Red, FString::Printf(TEXT("Score : %f"), score)); //DEBUG
@@ -83,7 +102,10 @@ float Ak3ShooterCharacter::CompareAndGetScore(){
 	return score;
 }
 
+
+// FIXME: There is apparently a crash in this function. I don't see it, but unreal does sometimes. 
 FString Ak3ShooterCharacter::GetCurrentWordProgress(){
+	if (TargetWord=="") return FString(TEXT("ERROR04"));
 	FString s = "";
 	for (int i = 0; i < Typed.Len(); i++){
 		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)){
@@ -92,4 +114,33 @@ FString Ak3ShooterCharacter::GetCurrentWordProgress(){
 	}
 	s += TargetWord.Mid(Typed.Len());
 	return s;
+}
+
+void Ak3ShooterCharacter::ResetDefaultValues(){
+	CurrentWordLength = 3;
+	Typed = "";
+	TargetWord = "";
+	Health = 100;
+	Money = 0.0f;
+	MoneyGain = 1.0f;
+	DamagePerLetter = 1.0f;
+	IsInShop = false;
+	// Add other variables here if any
+}
+
+
+/**
+ * SHOP
+ */
+
+
+void Ak3ShooterCharacter::ToggleShop(){
+	IsInShop = !IsInShop;
+	ShopRotationStart = Camera->GetComponentRotation();
+	ShopRotationEnd = FRotator::MakeFromEuler(FVector(0,0,IsInShop?180:0)); // shop location is at 180 - but remember, we toggle IsInShop before!
+	ShopRotationAlpha = 0.0f;
+}
+
+void Ak3ShooterCharacter::ShopOnKeyPress(FString n){
+	//TODO
 }
