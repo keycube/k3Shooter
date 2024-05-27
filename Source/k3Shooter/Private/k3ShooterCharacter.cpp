@@ -19,6 +19,7 @@ void Ak3ShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	if (TargetWord == "") GetNewTargetWord();
+	Shop = Cast<Ak3ShooterShop>(UGameplayStatics::GetActorOfClass(GetWorld(), Ak3ShooterShop::StaticClass()));
 }
 
 // Called every frame
@@ -59,7 +60,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	if (n.Len() != 1 || ((unsigned int)(n[0]) < 65 || (unsigned int)(n[0]) > 90)) return; 
 
 	// Shop is handled differently than this.
-	if (IsInShop) return ShopOnKeyPress(n); 
+	if (IsInShop) return ShopOnKeyPress(n[0]); 
 
 	Typed += n;
 
@@ -136,11 +137,12 @@ void Ak3ShooterCharacter::ResetDefaultValues(){
 
 void Ak3ShooterCharacter::ToggleShop(){
 	IsInShop = !IsInShop;
-	ShopRotationStart = Camera->GetComponentRotation();
-	ShopRotationEnd = FRotator::MakeFromEuler(FVector(0,0,IsInShop?180:0)); // shop location is at 180 - but remember, we toggle IsInShop before!
-	ShopRotationAlpha = 0.0f;
+	ShopRotationStart = FRotator::MakeFromEuler(FVector(0,0,IsInShop?0:180)); //
+	ShopRotationEnd = FRotator::MakeFromEuler(FVector(0,0,IsInShop?180:0));   // shop location is at 180 - but remember, we toggle IsInShop before!
+	ShopRotationAlpha = ShopRotationAlpha<1.0f?1.0f-ShopRotationAlpha:0.0f;
+	if (IsInShop && Shop) Shop->Typed = ""; // reset typed when entering shop. do we do the same when exiting? idk.
 }
 
-void Ak3ShooterCharacter::ShopOnKeyPress(FString n){
-	//TODO
+void Ak3ShooterCharacter::ShopOnKeyPress(TCHAR n){
+	if (Shop) Shop->OnKeyPress(n);
 }

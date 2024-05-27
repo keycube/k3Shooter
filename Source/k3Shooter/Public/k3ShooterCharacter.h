@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "k3ShooterShop.h"
 #include "k3Shooter/k3ShooterGameInstance.h"
 #include "InputCoreTypes.h"
 #include "k3ShooterCharacter.generated.h"
@@ -80,11 +81,13 @@ public:
 	 * SHOP
 	 */
 
+	Ak3ShooterShop* Shop;
+
 	UPROPERTY(BlueprintReadOnly)
 	bool IsInShop = false;
 
 	UFUNCTION(BlueprintCallable)
 	void ToggleShop();
 
-	void ShopOnKeyPress(FString n); // n = Name of the key. Ideally only call this on A-Z
+	void ShopOnKeyPress(TCHAR n); // n = Name of the key. Ideally only call this on A-Z
 };
