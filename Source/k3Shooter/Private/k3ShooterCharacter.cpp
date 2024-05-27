@@ -136,9 +136,9 @@ void Ak3ShooterCharacter::ResetDefaultValues(){
 
 void Ak3ShooterCharacter::ToggleShop(){
 	IsInShop = !IsInShop;
-	ShopRotationStart = Camera->GetComponentRotation();
-	ShopRotationEnd = FRotator::MakeFromEuler(FVector(0,0,IsInShop?180:0)); // shop location is at 180 - but remember, we toggle IsInShop before!
-	ShopRotationAlpha = 0.0f;
+	ShopRotationStart = FRotator::MakeFromEuler(FVector(0,0,IsInShop?0:180)); //
+	ShopRotationEnd = FRotator::MakeFromEuler(FVector(0,0,IsInShop?180:0));   // shop location is at 180 - but remember, we toggle IsInShop before!
+	ShopRotationAlpha = ShopRotationAlpha<1.0f?1.0f-ShopRotationAlpha:0.0f;
 }
 
 void Ak3ShooterCharacter::ShopOnKeyPress(FString n){
