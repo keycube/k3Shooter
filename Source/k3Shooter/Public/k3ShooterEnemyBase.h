@@ -24,12 +24,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void OnOverlap(AActor* MyActor, AActor* OtherActor);
-
-	UFUNCTION()
-	void OnEndOverlap(AActor* MyActor, AActor* OtherActor);
-
 	Ak3ShooterCharacter* GetPlayer();
 
 public:	
@@ -52,15 +46,19 @@ public:
 
 	// Current Health. Should be defined in ResetToDefaultValues
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float CurrentHealth;
+	float CurrentHealth = 10.0f;
 
 	// Movement speed. Should be defined in ResetToDefaultValues
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float MovementSpeed;
+	float MovementSpeed = 0.0f;
 
 	// Money given on kill. Should be defined in ResetToDefaultValues
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float MoneyValue;
+	float MoneyValue = 0.0f;
+
+	// Damage multiplier. Should be defined in ResetToDefaultValues
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float DamageMultiplier = 1.0f;
 
 	// To implement this in blueprint, just override it.
 	// To implement this in C++, create `void Ak3ShooterEnemyBase::ResetToDefaultValues_Implementation(){}`

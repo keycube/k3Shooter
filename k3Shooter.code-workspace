@@ -19,7 +19,10 @@
 			"string": "cpp",
 			"string_view": "cpp",
 			"bitset": "cpp",
-			"__node_handle": "cpp"
+			"__node_handle": "cpp",
+			"queue": "cpp",
+			"stack": "cpp",
+			"random": "cpp"
 		}
 	},
 	"extensions": {

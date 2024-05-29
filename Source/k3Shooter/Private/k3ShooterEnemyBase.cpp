@@ -10,16 +10,17 @@ Ak3ShooterEnemyBase::Ak3ShooterEnemyBase()
 	PrimaryActorTick.bCanEverTick = true;
 
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
+	BoxCollision->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
     RootComponent = BoxCollision;
 
     // Create StaticMeshComponent and attach to BoxComponent
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+	StaticMesh->SetCollisionProfileName(TEXT("NoCollision"));
     StaticMesh->SetupAttachment(BoxCollision);
 
 	// Create StaticMeshComponent and attach to BoxComponent
     HealthBar = CreateDefaultSubobject<UMaterialBillboardComponent>(TEXT("HealthBarBillboard"));
     HealthBar->SetupAttachment(BoxCollision);
-
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +30,8 @@ void Ak3ShooterEnemyBase::BeginPlay()
 	GetPlayer();
 	ResetToDefaultValues();
 
+	// Set hitbox to be slightly bigger than model
+	BoxCollision->SetBoxExtent(StaticMesh->Bounds.BoxExtent + FVector(4,4,4), true);
 
 	// Snap to ground so it looks more natural
 	FHitResult hit;
@@ -55,14 +58,6 @@ void Ak3ShooterEnemyBase::Tick(float DeltaTime)
 		OnDeath();
 		Destroy();
 	}
-}
-
-void Ak3ShooterEnemyBase::OnOverlap(AActor* MyActor, AActor* OtherActor){
-
-}
-
-void Ak3ShooterEnemyBase::OnEndOverlap(AActor* MyActor, AActor* OtherActor){
-	
 }
 
 Ak3ShooterCharacter* Ak3ShooterEnemyBase::GetPlayer(){

@@ -2,6 +2,7 @@
 
 
 #include "k3ShooterCharacter.h"
+#include "k3ShooterEnemyBase.h"
 
 // Sets default values
 Ak3ShooterCharacter::Ak3ShooterCharacter()
@@ -11,6 +12,11 @@ Ak3ShooterCharacter::Ak3ShooterCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
 	Camera->Activate(true);
+
+
+	//Bind overlap
+	this->OnActorBeginOverlap.AddDynamic(this, &Ak3ShooterCharacter::OnOverlap);
+    this->OnActorEndOverlap.AddDynamic(this, &Ak3ShooterCharacter::OnEndOverlap);
 
 }
 
@@ -129,6 +135,24 @@ void Ak3ShooterCharacter::ResetDefaultValues(){
 	// Add other variables here if any
 }
 
+void Ak3ShooterCharacter::Hurt(float DamageTaken){
+	Health -= (int)DamageTaken; //Always round down damage taken.
+								//Add some other parameters here if needed.
+	if (Health <= 0) {
+		// Death. todo
+	}
+}
+
+void Ak3ShooterCharacter::OnOverlap(AActor* MyActor, AActor* OtherActor){
+	if (Ak3ShooterEnemyBase* enemy = Cast<Ak3ShooterEnemyBase>(OtherActor); enemy){
+		Hurt(enemy->CurrentHealth * enemy->DamageMultiplier);
+		enemy->Destroy(); // only destroy, we don't kill so we don't get money
+	}
+}
+
+void Ak3ShooterCharacter::OnEndOverlap(AActor* MyActor, AActor* OtherActor){
+
+}
 
 /**
  * SHOP
