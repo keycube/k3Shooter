@@ -43,6 +43,10 @@ protected:
 	FRotator ShopRotationEnd;
 	float ShopRotationAlpha = 1.1f;
 
+	//Target logic
+	AActor* CurrentTarget;
+	AActor* GetNearestEnemy();
+
 public:	
 
 	/**
