@@ -7,12 +7,13 @@
 #include "Kismet/GameplayStatics.h"
 #include "k3ShooterCharacter.h"
 #include "Components/StaticMeshComponent.h" 
+#include "BehaviorTree/BehaviorTree.h"
 #include "Components/BoxComponent.h" 
 #include "Components/MaterialBillboardComponent.h"
 #include "k3ShooterEnemyBase.generated.h"
 
 UCLASS()
-class K3SHOOTER_API Ak3ShooterEnemyBase : public AActor
+class K3SHOOTER_API Ak3ShooterEnemyBase : public ACharacter
 {
 	GENERATED_BODY()
 	
@@ -24,25 +25,21 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	Ak3ShooterCharacter* GetPlayer();
+	
+
+	// Player - we move in its direction
+	UPROPERTY(BlueprintReadOnly)
+	Ak3ShooterCharacter* Player;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UBoxComponent* BoxCollision;
-
-	//Might change later because slime
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UStaticMeshComponent* StaticMesh;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UMaterialBillboardComponent* HealthBar;
 
-	// Player - we move in its direction
-	UPROPERTY(BlueprintReadOnly)
-	Ak3ShooterCharacter* Player;
+	UFUNCTION()
+	Ak3ShooterCharacter* GetPlayer();
 
 	// Current Health. Should be defined in ResetToDefaultValues
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -71,4 +68,7 @@ public:
 	// Called when at 0 Health, before destroying the actor.
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void OnDeath();
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+    class UBehaviorTree* TreeAsset;
 };
