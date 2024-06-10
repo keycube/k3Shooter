@@ -49,7 +49,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	
 	FString n = key.GetFName().ToString().ToUpper();
 
-	if (n == "ONE") { // DEBUG - TO REMOVE ONCE GYROSCOPE IMPLEMENTED
+	if (n == "a") { // DEBUG - TO REMOVE ONCE GYROSCOPE IMPLEMENTED
 		ToggleShop();
 		return;
 	}
