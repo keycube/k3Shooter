@@ -2,6 +2,7 @@
 
 
 #include "k3ShooterEnemyBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 Ak3ShooterEnemyBase::Ak3ShooterEnemyBase()
@@ -20,6 +21,7 @@ void Ak3ShooterEnemyBase::BeginPlay()
 	Super::BeginPlay();
 	GetPlayer();
 	ResetToDefaultValues();
+	GetCharacterMovement()->MaxWalkSpeed *= MovementSpeed;
 }
 
 // Called every frame
