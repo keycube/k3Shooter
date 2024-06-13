@@ -31,6 +31,7 @@ void AItemIncrementNumberLetter::Buy()
 	Ak3ShooterCharacter* Character = Cast<Ak3ShooterCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), Ak3ShooterCharacter::StaticClass()));
 	if (Character->CurrentWordLength < 12) {
 		Character->CurrentWordLength += 1;
+		Character->GetNewTargetWord();
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("AddOneLetter"));
 	}
 }
