@@ -2,6 +2,7 @@
 
 
 #include "k3ShooterCharacter.h"
+#include "k3ShooterEnemyBase.h"
 
 // Sets default values
 Ak3ShooterCharacter::Ak3ShooterCharacter()
@@ -11,6 +12,11 @@ Ak3ShooterCharacter::Ak3ShooterCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(RootComponent);
 	Camera->Activate(true);
+
+
+	//Bind overlap
+	this->OnActorBeginOverlap.AddDynamic(this, &Ak3ShooterCharacter::OnOverlap);
+    this->OnActorEndOverlap.AddDynamic(this, &Ak3ShooterCharacter::OnEndOverlap);
 
 }
 
@@ -46,7 +52,6 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 
 	if (TargetWord == "") GetNewTargetWord(); // If we don't have a word, get a new one. This should only happen the first time.
 
-	
 	FString n = key.GetFName().ToString().ToUpper();
 
 	if (n == "a") { // DEBUG - TO REMOVE ONCE GYROSCOPE IMPLEMENTED
@@ -61,12 +66,19 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 
 	// Shop is handled differently than this.
 	if (IsInShop) return ShopOnKeyPress(n[0]); 
+	 
+	//Target handling.
+	//We don't need to type if there is no enemy. Do we completely disable typing? yes for now, unsure tho.
+	Ak3ShooterEnemyBase* ct;
+	if (CurrentTarget == nullptr || !IsValid(CurrentTarget)) CurrentTarget = Cast<Ak3ShooterEnemyBase>(GetNearestEnemy()); 
+	if (CurrentTarget == nullptr || !IsValid(CurrentTarget)) return; // GetNearestEnemy returns null if there is no enemy.
+	ct = Cast<Ak3ShooterEnemyBase>(CurrentTarget); // needed because if i don't do it i get dependency loops. love these 
 
 	Typed += n;
 
 	if (Typed.Len() > CurrentWordLength) Typed = Typed.Mid(0, CurrentWordLength); // If what you typed is somehow above the length we want, trim it down
 	if (Typed.Len() == CurrentWordLength){
-		CompareAndGetScore(); // TODO : do something with the resulting score
+		ct->CurrentHealth -= CompareAndGetScore(); 
 		GetNewTargetWord();
 	} 
 
@@ -93,7 +105,7 @@ float Ak3ShooterCharacter::CompareAndGetScore(){
 
 	for (int i = 0; i < CurrentWordLength; i++){
 		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)){
-			// Score Calculation
+			// Score Calculation. add more parameters here and after the loop if needed
 			score += DamagePerLetter;
 		} 
 	}
@@ -129,6 +141,39 @@ void Ak3ShooterCharacter::ResetDefaultValues(){
 	// Add other variables here if any
 }
 
+void Ak3ShooterCharacter::Hurt(float DamageTaken){
+	Health -= (int)DamageTaken; //Always round down damage taken.
+								//Add some other parameters here if needed.
+	if (Health <= 0) {
+		// Death. todo
+	}
+}
+
+void Ak3ShooterCharacter::OnOverlap(AActor* MyActor, AActor* OtherActor){
+	if (Ak3ShooterEnemyBase* enemy = Cast<Ak3ShooterEnemyBase>(OtherActor); enemy){
+		Hurt(enemy->CurrentHealth * enemy->DamageMultiplier);
+		enemy->Destroy(); // only destroy, we don't kill so we don't get money
+	}
+}
+
+void Ak3ShooterCharacter::OnEndOverlap(AActor* MyActor, AActor* OtherActor){
+
+}
+
+AActor* Ak3ShooterCharacter::GetNearestEnemy(){
+	TArray<AActor*> enemies;
+	AActor* closest = nullptr;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), Ak3ShooterEnemyBase::StaticClass(), enemies);
+	for (auto& e : enemies){
+		if (closest == nullptr || !IsValid(closest)){
+			closest = e;
+			continue;
+		} else if (FVector::Distance(GetActorLocation(), closest->GetActorLocation()) > FVector::Distance(GetActorLocation(), e->GetActorLocation())){
+			closest = e;
+		}
+	}
+	return closest;
+}
 
 /**
  * SHOP

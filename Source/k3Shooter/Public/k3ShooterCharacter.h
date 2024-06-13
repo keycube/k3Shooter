@@ -24,6 +24,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnOverlap(AActor* MyActor, AActor* OtherActor);
+
+	UFUNCTION()
+	void OnEndOverlap(AActor* MyActor, AActor* OtherActor);
+
 	// Called When any key is pressed, responsible for handling A-Z key events to get the 
 	void OnAnyKeyPress(FKey key);
 
@@ -36,6 +42,10 @@ protected:
 	FRotator ShopRotationStart;
 	FRotator ShopRotationEnd;
 	float ShopRotationAlpha = 1.1f;
+
+	//Target logic
+	AActor* CurrentTarget;
+	AActor* GetNearestEnemy();
 
 public:	
 
@@ -76,6 +86,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FString GetCurrentWordProgress();
+
+	// This function should be called by either this actor or other actors to hurt the player.
+	// It takes care of killing the player, reducing the damage from some parameters (if added in the future), etc
+	UFUNCTION(BlueprintCallable)
+	void Hurt(float DamageTaken);
 
 	/**
 	 * SHOP
