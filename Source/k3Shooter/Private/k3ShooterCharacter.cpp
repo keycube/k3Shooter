@@ -49,12 +49,11 @@ void Ak3ShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 // Executed on any key press (bound in SetupPlayerInputComponent)
 void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
-
 	if (TargetWord == "") GetNewTargetWord(); // If we don't have a word, get a new one. This should only happen the first time.
 
 	FString n = key.GetFName().ToString().ToUpper();
 
-	if (n == "a") { // DEBUG - TO REMOVE ONCE GYROSCOPE IMPLEMENTED
+	if (n == "TAB") { // DEBUG - TO REMOVE ONCE GYROSCOPE IMPLEMENTED
 		ToggleShop();
 		return;
 	}
