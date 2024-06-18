@@ -19,5 +19,8 @@ public:
 	TArray<TSubclassOf<Ak3ShooterEnemyBase>> Enemies;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
-	float TimeMultiplier = 1.0f;
+	float MinimumTimeToSpawn = 1.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
+	float MaximumTimeToSpawn = 5.0f;
 };

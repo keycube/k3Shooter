@@ -10,21 +10,7 @@
 		}
 	],
 	"settings": {
-		"typescript.tsc.autoDetect": "off",
-		"files.associations": {
-			"rope": "cpp",
-			"regex": "cpp",
-			"*.ipp": "cpp",
-			"__locale": "cpp",
-			"string": "cpp",
-			"string_view": "cpp",
-			"bitset": "cpp",
-			"__node_handle": "cpp",
-			"queue": "cpp",
-			"stack": "cpp",
-			"random": "cpp",
-			"numbers": "cpp"
-		}
+		"typescript.tsc.autoDetect": "off"
 	},
 	"extensions": {
 		"recommendations": [
