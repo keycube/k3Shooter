@@ -98,7 +98,7 @@ public:
 
 	Ak3ShooterShop* Shop;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	bool IsInShop = false;
 
 	UFUNCTION(BlueprintCallable)
