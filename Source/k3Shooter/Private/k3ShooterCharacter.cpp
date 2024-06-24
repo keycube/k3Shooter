@@ -72,6 +72,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	if (CurrentTarget == nullptr || !IsValid(CurrentTarget)) CurrentTarget = Cast<Ak3ShooterEnemyBase>(GetNearestEnemy()); 
 	if (CurrentTarget == nullptr || !IsValid(CurrentTarget)) return; // GetNearestEnemy returns null if there is no enemy.
 	ct = Cast<Ak3ShooterEnemyBase>(CurrentTarget); // needed because if i don't do it i get dependency loops. love these 
+	if (ct == nullptr || !IsValid(ct)) return;
 
 	Typed += n;
 

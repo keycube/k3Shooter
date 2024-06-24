@@ -24,3 +24,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Wave")
 	float MaximumTimeToSpawn = 5.0f;
 };
+
+USTRUCT(BlueprintType)
+/**
+ * Structure for an enemy, used for procgen
+ */
+struct FEnemy {
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Enemy")
+	TSubclassOf<Ak3ShooterEnemyBase> Enemy;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Enemy")
+	float Points = 1.0f;
+};
+
+
+

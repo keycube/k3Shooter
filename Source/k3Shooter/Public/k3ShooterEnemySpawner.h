@@ -58,4 +58,17 @@ public:
 	//Next Enemy spawn time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float NextSpawnIn = 0.0f;
+
+	//Points for procgen
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float WavePoints = 0.0f;
+
+	//Get random enemy from remaining points - returns the enemy, lowers the points by the amount.
+	//Returns null if nothing found
+	TSubclassOf<Ak3ShooterEnemyBase> GetRandomEnemyWithRemainingPoints(float* Points);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FEnemy> Enemies;
+
+	bool EndWave = false;
 };
