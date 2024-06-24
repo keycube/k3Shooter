@@ -56,7 +56,7 @@ void Ak3ShooterEnemySpawner::Tick(float DeltaTime){
 			if (CurrentWave == nullptr) return;
 			GetWorld()->SpawnActor<Ak3ShooterEnemyBase>(CurrentWave->Enemies[CurrentEnemy], spawnedActorLocation, spawnedActorRotation, spawnedActorInfo); //TODO add check to see if it's present
 
-			NextSpawnIn = FMath::RandRange(1.5f, 5.0f) / CurrentWave->TimeMultiplier;
+			NextSpawnIn = FMath::RandRange(CurrentWave->MinimumTimeToSpawn, CurrentWave->MaximumTimeToSpawn);
 			CurrentEnemy++;
 		}
 	}
