@@ -61,8 +61,6 @@ public:
 
 	void GetNewTargetWord();
 
-	float CompareAndGetScore();
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString TargetWord = "";
 
@@ -91,6 +89,10 @@ public:
 	// It takes care of killing the player, reducing the damage from some parameters (if added in the future), etc
 	UFUNCTION(BlueprintCallable)
 	void Hurt(float DamageTaken);
+
+	// Fires X bullets at the enemies. This allows to hit multiple enemies with one word, provided they have low enough health.
+	UFUNCTION(BlueprintCallable)
+	void Fire();
 
 	/**
 	 * SHOP
