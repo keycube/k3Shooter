@@ -2,6 +2,7 @@
 
 
 #include "k3ShooterCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "k3ShooterEnemyBase.h"
 
 // Sets default values
@@ -13,6 +14,29 @@ Ak3ShooterCharacter::Ak3ShooterCharacter()
 	Camera->SetupAttachment(RootComponent);
 	Camera->Activate(true);
 
+	GunModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Gun Model"));
+	GunWordWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Word Widget"));
+
+	GunModel->Activate(true);
+	AddOwnedComponent(GunModel);
+	GunModel->RegisterComponent();
+
+	GunWordWidget->Activate(true);
+	//GunModel->
+	GunWordWidget->RegisterComponent();
+
+	GunModel->SetupAttachment(RootComponent);
+	GunWordWidget->SetupAttachment(GunModel);
+
+	GunModel->SetCollisionProfileName("NoCollision");
+	GunWordWidget->SetCollisionProfileName("NoCollision");
+
+	GunModel->SetRelativeLocation(FVector(33.20484f, 17.106224f, -25.0f));
+	GunModel->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0.0f,0.0f,180.0f)));
+	GunModel->SetRelativeScale3D(FVector(0.1f,0.1f,0.1f));
+
+	GunWordWidget->SetRelativeLocation(FVector(103.5f, 0.0f, 196.0f));
+	GunWordWidget->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0.0f,20.0f,0.0f)));
 
 	//Bind overlap
 	this->OnActorBeginOverlap.AddDynamic(this, &Ak3ShooterCharacter::OnOverlap);
@@ -37,6 +61,21 @@ void Ak3ShooterCharacter::Tick(float DeltaTime)
 		if (ShopRotationAlpha >= 1.0f) ShopRotationAlpha = 1.0f;
 		Camera->SetWorldRotation(FRotator(FQuat::Slerp(ShopRotationStart.Quaternion(), ShopRotationEnd.Quaternion(), ShopRotationAlpha)));
 	}
+
+	// Gun UI
+	GunWordWidget->SetRelativeScale3D(FVector(FMath::Lerp(0.5f, 0.2f, (TargetWord.Len() - 3.0f) / 9.0f)));
+
+	// Gun Recoil
+	if (RecoilAmount > 0){
+
+		RecoilMovementCurrent += RecoilMovement * RecoilMovementMult;
+		GunModel->SetRelativeLocation(FMath::Lerp(FVector(33.20484f, 17.106224f, -25.0f), FVector(32.20484f, 17.106224f, -25.0f), RecoilMovementCurrent));
+		if (RecoilMovementCurrent >= 1.0f) RecoilMovementMult = -1.0f;
+		if (RecoilMovementCurrent <= 0.0f) {
+			RecoilMovementMult = 1.0f;
+			RecoilAmount--;
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -53,7 +92,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 
 	FString n = key.GetFName().ToString().ToUpper();
 
-	if (n == "TAB") { // DEBUG - TO REMOVE ONCE GYROSCOPE IMPLEMENTED
+	if (n == "TAB") { //REMOVE ONCE GYROSCOPE IMPLEMENTED
 		ToggleShop();
 		return;
 	}
@@ -66,19 +105,15 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	// Shop is handled differently than this.
 	if (IsInShop) return ShopOnKeyPress(n[0]); 
 	 
-	//Target handling.
 	//We don't need to type if there is no enemy. Do we completely disable typing? yes for now, unsure tho.
-	Ak3ShooterEnemyBase* ct;
-	if (CurrentTarget == nullptr || !IsValid(CurrentTarget)) CurrentTarget = Cast<Ak3ShooterEnemyBase>(GetNearestEnemy()); 
-	if (CurrentTarget == nullptr || !IsValid(CurrentTarget)) return; // GetNearestEnemy returns null if there is no enemy.
-	ct = Cast<Ak3ShooterEnemyBase>(CurrentTarget); // needed because if i don't do it i get dependency loops. love these 
-	if (ct == nullptr || !IsValid(ct)) return;
+	Ak3ShooterEnemyBase* target = Cast<Ak3ShooterEnemyBase>(GetNearestEnemy());
+	if (target == nullptr || !IsValid(target)) return;
 
 	Typed += n;
 
 	if (Typed.Len() > CurrentWordLength) Typed = Typed.Mid(0, CurrentWordLength); // If what you typed is somehow above the length we want, trim it down
 	if (Typed.Len() == CurrentWordLength){
-		ct->CurrentHealth -= CompareAndGetScore(); 
+		Fire(); 
 		GetNewTargetWord();
 	} 
 
@@ -96,25 +131,23 @@ void Ak3ShooterCharacter::GetNewTargetWord(){
 	} else TargetWord = "ERROR02";
 }
 
-
-// Compare the two words (target and typed) and calculate a score based on the numbers of correct letters.
-float Ak3ShooterCharacter::CompareAndGetScore(){
-	if (CurrentWordLength != TargetWord.Len() || TargetWord.Len() != Typed.Len()) return 0.0f; //If the words aren't the same length, calling this makes no sense.
-
-	float score = 0.0f;
+//Fire : Fires X bullets 
+void Ak3ShooterCharacter::Fire(){
+	if (CurrentWordLength != TargetWord.Len() || TargetWord.Len() != Typed.Len()) return; //If the words aren't the same length, calling this makes no sense.
 
 	for (int i = 0; i < CurrentWordLength; i++){
 		if (TargetWord.Mid(i,1).Equals(Typed.Mid(i,1), ESearchCase::IgnoreCase)){
-			// Score Calculation. add more parameters here and after the loop if needed
-			score += DamagePerLetter;
-		} 
+			Ak3ShooterEnemyBase* e = Cast<Ak3ShooterEnemyBase>(GetNearestEnemy());
+			if (e == nullptr || !IsValid(e)) continue;
+			e->CurrentHealth -= DamagePerLetter;
+			if (e->CurrentHealth <= 0){
+				e->OnDeath();
+				e->Destroy();
+			}
+			RecoilAmount++;
+		}
 	}
-
-	GEngine->AddOnScreenDebugMessage(0x3002, 15.0f, FColor::Red, FString::Printf(TEXT("Score : %f"), score)); //DEBUG
-
-	return score;
 }
-
 
 // FIXME: There is apparently a crash in this function. I don't see it, but unreal does sometimes. 
 FString Ak3ShooterCharacter::GetCurrentWordProgress(){
@@ -174,6 +207,8 @@ AActor* Ak3ShooterCharacter::GetNearestEnemy(){
 	}
 	return closest;
 }
+
+
 
 /**
  * SHOP

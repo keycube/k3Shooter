@@ -9,6 +9,8 @@
 #include "k3ShooterShop.h"
 #include "k3Shooter/k3ShooterGameInstance.h"
 #include "InputCoreTypes.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "k3ShooterCharacter.generated.h"
 
 UCLASS()
@@ -59,9 +61,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void GetNewTargetWord();
+	//Gun
+	UStaticMeshComponent* GunModel;
+	UWidgetComponent* GunWordWidget;
 
-	float CompareAndGetScore();
+	void GetNewTargetWord();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString TargetWord = "";
@@ -92,6 +96,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Hurt(float DamageTaken);
 
+	// Fires X bullets at the enemies. This allows to hit multiple enemies with one word, provided they have low enough health.
+	UFUNCTION(BlueprintCallable)
+	void Fire();
+
 	/**
 	 * SHOP
 	 */
@@ -105,4 +113,14 @@ public:
 	void ToggleShop();
 
 	void ShopOnKeyPress(TCHAR n); // n = Name of the key. Ideally only call this on A-Z
+
+	/**
+	 * MISC
+	 * Recoil, etc
+	 */
+
+	int RecoilAmount = 0;
+	const float RecoilMovement = 0.50f;
+	float RecoilMovementCurrent = 0.0f;
+	float RecoilMovementMult = 1.0f;
 };
