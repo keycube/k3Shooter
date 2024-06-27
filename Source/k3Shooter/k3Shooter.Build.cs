@@ -8,7 +8,7 @@ public class k3Shooter : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "GameplayTasks", "AIModule", "NavigationSystem"});
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "GameplayTasks", "AIModule", "NavigationSystem", "UMG"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

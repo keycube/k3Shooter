@@ -9,6 +9,8 @@
 #include "k3ShooterShop.h"
 #include "k3Shooter/k3ShooterGameInstance.h"
 #include "InputCoreTypes.h"
+#include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "k3ShooterCharacter.generated.h"
 
 UCLASS()
@@ -59,6 +61,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//Gun
+	UStaticMeshComponent* GunModel;
+	UWidgetComponent* GunWordWidget;
+
 	void GetNewTargetWord();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -107,4 +113,14 @@ public:
 	void ToggleShop();
 
 	void ShopOnKeyPress(TCHAR n); // n = Name of the key. Ideally only call this on A-Z
+
+	/**
+	 * MISC
+	 * Recoil, etc
+	 */
+
+	int RecoilAmount = 0;
+	const float RecoilMovement = 0.50f;
+	float RecoilMovementCurrent = 0.0f;
+	float RecoilMovementMult = 1.0f;
 };

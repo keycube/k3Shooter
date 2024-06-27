@@ -2,6 +2,7 @@
 
 
 #include "k3ShooterCharacter.h"
+#include "Components/CapsuleComponent.h"
 #include "k3ShooterEnemyBase.h"
 
 // Sets default values
@@ -13,6 +14,29 @@ Ak3ShooterCharacter::Ak3ShooterCharacter()
 	Camera->SetupAttachment(RootComponent);
 	Camera->Activate(true);
 
+	GunModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Gun Model"));
+	GunWordWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Word Widget"));
+
+	GunModel->Activate(true);
+	AddOwnedComponent(GunModel);
+	GunModel->RegisterComponent();
+
+	GunWordWidget->Activate(true);
+	//GunModel->
+	GunWordWidget->RegisterComponent();
+
+	GunModel->SetupAttachment(RootComponent);
+	GunWordWidget->SetupAttachment(GunModel);
+
+	GunModel->SetCollisionProfileName("NoCollision");
+	GunWordWidget->SetCollisionProfileName("NoCollision");
+
+	GunModel->SetRelativeLocation(FVector(33.20484f, 17.106224f, -25.0f));
+	GunModel->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0.0f,0.0f,180.0f)));
+	GunModel->SetRelativeScale3D(FVector(0.1f,0.1f,0.1f));
+
+	GunWordWidget->SetRelativeLocation(FVector(103.5f, 0.0f, 196.0f));
+	GunWordWidget->SetRelativeRotation(FQuat::MakeFromEuler(FVector(0.0f,20.0f,0.0f)));
 
 	//Bind overlap
 	this->OnActorBeginOverlap.AddDynamic(this, &Ak3ShooterCharacter::OnOverlap);
@@ -36,6 +60,21 @@ void Ak3ShooterCharacter::Tick(float DeltaTime)
 		ShopRotationAlpha += DeltaTime;
 		if (ShopRotationAlpha >= 1.0f) ShopRotationAlpha = 1.0f;
 		Camera->SetWorldRotation(FRotator(FQuat::Slerp(ShopRotationStart.Quaternion(), ShopRotationEnd.Quaternion(), ShopRotationAlpha)));
+	}
+
+	// Gun UI
+	GunWordWidget->SetWorldScale3D(FVector(FMath::Lerp(0.05f, 0.02f, (TargetWord.Len() - 3.0f) / 9.0f)));
+
+	// Gun Recoil
+	if (RecoilAmount > 0){
+
+		RecoilMovementCurrent += RecoilMovement * RecoilMovementMult;
+		GunModel->SetRelativeLocation(FMath::Lerp(FVector(33.20484f, 17.106224f, -25.0f), FVector(32.20484f, 17.106224f, -25.0f), RecoilMovementCurrent));
+		if (RecoilMovementCurrent >= 1.0f) RecoilMovementMult = -1.0f;
+		if (RecoilMovementCurrent <= 0.0f) {
+			RecoilMovementMult = 1.0f;
+			RecoilAmount--;
+		}
 	}
 }
 
@@ -105,6 +144,7 @@ void Ak3ShooterCharacter::Fire(){
 				e->OnDeath();
 				e->Destroy();
 			}
+			RecoilAmount++;
 		}
 	}
 }
