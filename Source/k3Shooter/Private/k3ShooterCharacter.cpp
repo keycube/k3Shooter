@@ -63,7 +63,7 @@ void Ak3ShooterCharacter::Tick(float DeltaTime)
 	}
 
 	// Gun UI
-	GunWordWidget->SetWorldScale3D(FVector(FMath::Lerp(0.05f, 0.02f, (TargetWord.Len() - 3.0f) / 9.0f)));
+	GunWordWidget->SetRelativeScale3D(FVector(FMath::Lerp(0.5f, 0.2f, (TargetWord.Len() - 3.0f) / 9.0f)));
 
 	// Gun Recoil
 	if (RecoilAmount > 0){

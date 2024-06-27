@@ -18,10 +18,12 @@ Ak3ShooterEnemyBase::Ak3ShooterEnemyBase()
 // Called when the game starts or when spawned
 void Ak3ShooterEnemyBase::BeginPlay()
 {
+	GEngine->AddOnScreenDebugMessage(0x3011, 15.0f, FColor::Red, "Hey all scott here");
 	Super::BeginPlay();
 	GetPlayer();
 	ResetToDefaultValues();
 	GetCharacterMovement()->MaxWalkSpeed *= MovementSpeed;
+	
 }
 
 // Called every frame
