@@ -45,4 +45,7 @@ Ak3ShooterCharacter* Ak3ShooterEnemyBase::GetPlayer(){
 
 // You need to implement these yourself
 void Ak3ShooterEnemyBase::ResetToDefaultValues_Implementation(){}
-void Ak3ShooterEnemyBase::OnDeath_Implementation(){}
+void Ak3ShooterEnemyBase::OnDeath_Implementation(){
+	//Don't forget to call Super in your BP!!
+	GetPlayer()->Money+=MoneyValue*GetPlayer()->MoneyGain;
+}

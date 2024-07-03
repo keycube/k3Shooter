@@ -49,6 +49,9 @@ protected:
 	AActor* CurrentTarget;
 	AActor* GetNearestEnemy();
 
+	//Widget size
+	float WidgetSizeList[10] = {0.5f, 0.466667f, 0.433333f, 0.38f, 0.32f, 0.29f, 0.255f, 0.23f, 0.21f, 0.2f};
+
 public:	
 
 	/**
