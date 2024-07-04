@@ -2,6 +2,7 @@
 
 
 #include "k3ShooterEnemyBase.h"
+#include "k3Shooter/k3ShooterGameInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -48,4 +49,6 @@ void Ak3ShooterEnemyBase::ResetToDefaultValues_Implementation(){}
 void Ak3ShooterEnemyBase::OnDeath_Implementation(){
 	//Don't forget to call Super in your BP!!
 	GetPlayer()->Money+=MoneyValue*GetPlayer()->MoneyGain;
+	Uk3ShooterGameInstance* GI = Cast<Uk3ShooterGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); 
+	GI->MoneyGained += MoneyValue*GetPlayer()->MoneyGain;
 }

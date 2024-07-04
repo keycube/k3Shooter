@@ -27,4 +27,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FString GetRandomWordOfLength(int length);
 
+	//Used during score recap
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MoneyGained = 0.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int HPLost = 0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int HPRegen = 0;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FString NewName;
+
 };

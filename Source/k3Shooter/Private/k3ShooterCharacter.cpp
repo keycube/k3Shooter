@@ -76,6 +76,11 @@ void Ak3ShooterCharacter::Tick(float DeltaTime)
 			RecoilAmount--;
 		}
 	}
+
+	//Death
+	if (Health<=0){
+		UGameplayStatics::OpenLevel(this, FName(TEXT("EndLevel")));
+	}
 }
 
 // Called to bind functionality to input
@@ -177,9 +182,8 @@ void Ak3ShooterCharacter::ResetDefaultValues(){
 void Ak3ShooterCharacter::Hurt(float DamageTaken){
 	Health -= (int)DamageTaken; //Always round down damage taken.
 								//Add some other parameters here if needed.
-	if (Health <= 0) {
-		// Death. todo
-	}
+	Uk3ShooterGameInstance* GI = Cast<Uk3ShooterGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	GI->HPLost += DamageTaken;
 }
 
 void Ak3ShooterCharacter::OnOverlap(AActor* MyActor, AActor* OtherActor){
