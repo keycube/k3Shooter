@@ -101,7 +101,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	if (n == "TAB") {
 		ToggleShop();
 		return;
-	} else if (n == "ENTER"){
+	} else if (n == "ENTER" && !IsInShop){
 		Ak3ShooterEnemySpawner* spawner = Cast<Ak3ShooterEnemySpawner>(UGameplayStatics::GetActorOfClass(GetWorld(), Ak3ShooterEnemySpawner::StaticClass()));
 		if (spawner->IsOnBreak){
 			spawner->BreakTime = 0.0f;
