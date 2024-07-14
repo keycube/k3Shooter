@@ -2,6 +2,7 @@
 
 
 #include "k3ShooterCharacter.h"
+#include "k3ShooterEnemySpawner.h"
 #include "Components/CapsuleComponent.h"
 #include "k3ShooterEnemyBase.h"
 
@@ -97,9 +98,14 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 
 	FString n = key.GetFName().ToString().ToUpper();
 
-	if (n == "TAB") { //REMOVE ONCE GYROSCOPE IMPLEMENTED
+	if (n == "TAB") {
 		ToggleShop();
 		return;
+	} else if (n == "ENTER"){
+		Ak3ShooterEnemySpawner* spawner = Cast<Ak3ShooterEnemySpawner>(UGameplayStatics::GetActorOfClass(GetWorld(), Ak3ShooterEnemySpawner::StaticClass()));
+		if (spawner->IsOnBreak){
+			spawner->BreakTime = 0.0f;
+		}
 	}
 
 	//Check if we pressed a letter.

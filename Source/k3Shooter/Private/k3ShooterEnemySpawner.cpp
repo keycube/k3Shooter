@@ -38,6 +38,7 @@ void Ak3ShooterEnemySpawner::Tick(float DeltaTime){
 				WavePoints = WaveNumber * 25.0f;
 			} else CurrentWave = Waves->FindRow<FWave>(FName(*FString::FromInt(WaveNumber)), TEXT(""), false);
 			CurrentEnemy = 0;
+			NextSpawnIn = 0.0f;
 		}
 	} else if (EndWave) {
 		TArray<AActor*> aliveEnemies;
