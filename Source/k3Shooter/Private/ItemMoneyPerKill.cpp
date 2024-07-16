@@ -29,6 +29,7 @@ void AItemMoneyPerKill::Tick(float DeltaTime)
 void AItemMoneyPerKill::Buy()
 {
 	Ak3ShooterCharacter* Character = Cast<Ak3ShooterCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), Ak3ShooterCharacter::StaticClass()));
-	Character->MoneyGain += 0.2f;
+	Character->MoneyGain += 0.1f;
+	Price*=1.5f;
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("MoneyPerKill"));
 }

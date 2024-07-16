@@ -30,5 +30,6 @@ void AItemAddDamageLetter::Buy()
 {
 	Ak3ShooterCharacter* Character = Cast<Ak3ShooterCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), Ak3ShooterCharacter::StaticClass()));
 	Character->DamagePerLetter += 0.1f;
+	Price*=1.5f;
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("DamageIncreased"));
 }
