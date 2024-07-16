@@ -32,6 +32,7 @@ void AItemIncrementNumberLetter::Buy()
 	if (Character->CurrentWordLength < 12) {
 		Character->CurrentWordLength += 1;
 		Character->GetNewTargetWord();
+		Price*=1.25f;
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, TEXT("AddOneLetter"));
 	}
 }
