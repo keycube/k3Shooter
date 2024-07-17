@@ -238,5 +238,6 @@ void Ak3ShooterCharacter::ToggleShop(){
 }
 
 void Ak3ShooterCharacter::ShopOnKeyPress(TCHAR n){
+	Shop = Cast<Ak3ShooterShop>(UGameplayStatics::GetActorOfClass(GetWorld(), Ak3ShooterShop::StaticClass()));
 	if (Shop) Shop->OnKeyPress(n);
 }

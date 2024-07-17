@@ -32,7 +32,6 @@ void Ak3ShooterShop::Tick(float DeltaTime)
 
 void Ak3ShooterShop::OnKeyPress(TCHAR key){
 	Typed += key;
-
 	// Check if what we typed corresponds to any of the available items.
 	for (auto& Item : Items){
 		if (Item->Word.Equals(Typed, ESearchCase::IgnoreCase)){ //Exact match? attempt to buy
