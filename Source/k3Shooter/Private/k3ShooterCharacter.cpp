@@ -18,16 +18,20 @@ Ak3ShooterCharacter::Ak3ShooterCharacter()
 	GunModel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Gun Model"));
 	GunWordWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("Word Widget"));
 
+	if (!IsValid(GetWorld())) return;
+
 	GunModel->Activate(true);
 	AddOwnedComponent(GunModel);
-	GunModel->RegisterComponent();
+	//GunModel->RegisterComponent();
 
 	GunWordWidget->Activate(true);
 	//GunModel->
-	GunWordWidget->RegisterComponent();
+	//GunWordWidget->RegisterComponent();
 
 	GunModel->SetupAttachment(RootComponent);
+	//GunModel->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	GunWordWidget->SetupAttachment(GunModel);
+	//GunWordWidget->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
 
 	GunModel->SetCollisionProfileName("NoCollision");
 	GunWordWidget->SetCollisionProfileName("NoCollision");
