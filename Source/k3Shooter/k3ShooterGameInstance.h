@@ -36,5 +36,6 @@ public:
 	int HPRegen = 0;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FString NewName;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int WaveNumber;
 };

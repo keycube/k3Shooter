@@ -34,6 +34,8 @@ void Ak3ShooterEnemySpawner::Tick(float DeltaTime){
 		if (BreakTime <= 0.0f) {
 			IsOnBreak = false;
 			WaveNumber++;
+			Uk3ShooterGameInstance* GI = Cast<Uk3ShooterGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())); 
+			GI->WaveNumber++;
 			if (WaveNumber > Waves->GetRowNames().Num()){ //TODO : change this condition to fallback on procgen only if findrow fails
 				WavePoints = WaveNumber * 25.0f;
 			} else CurrentWave = Waves->FindRow<FWave>(FName(*FString::FromInt(WaveNumber)), TEXT(""), false);
