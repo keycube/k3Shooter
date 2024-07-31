@@ -101,7 +101,7 @@ void Ak3ShooterCharacter::OnAnyKeyPress(FKey key){
 	if (TargetWord == "") GetNewTargetWord(); // If we don't have a word, get a new one. This should only happen the first time.
 
 	FString n = key.GetFName().ToString().ToUpper();
-
+	GEngine->AddOnScreenDebugMessage(0x3033, 10.0f, FColor::Blue, n);
 	if (n == "TAB") {
 		ToggleShop();
 		return;
